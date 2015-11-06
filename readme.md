@@ -18,8 +18,7 @@ Using toCSS() can synchronize a DOM element as well.
 
 No dependencies.
 
-*Now also includes a vector reflection method (see included demo for
-example usage):*
+Includes a vector reflection method (see included demo for example usage):*
 
 
 Install
@@ -53,8 +52,7 @@ object.
 
 Some of the methods:
 
-    *NEW matrix.interpolateAnim();      // decomposed interpolation
-
+    matrix.interpolateAnim();           // decomposed interpolation
     matrix.toString();
     matrix.toJSON();
     matrix.toCSS();
@@ -89,7 +87,7 @@ Some of the methods:
     matrix.reflectVector(x, y)         // BETA reflects vector on normal (=current x-axis);
     matrix.concat(childMatrix)
 
-Get current transform matrix property values:
+Get current transform matrix properties:
 
     var a = matrix.a;	// scale x
     var b = matrix.b;	// shear y
@@ -168,4 +166,4 @@ Released under [MIT license](http://choosealicense.com/licenses/mit/). You can u
 
 *&copy; 2014-2015 Epistmex*
 
-![Epistemex](http://i.imgur.com/YxO8CtB.png)
+![Epistemex](http://i.imgur.com/wZSsyt8.png)
