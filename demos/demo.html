@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="copyright" content="Epistemex 2014-2015">
+
+	<title>2D Affine Transformation Matrix demo</title>
+
+	<style>
+		body {
+			background:#ddd;
+			color:#555;
+			font-family:sans-serif;
+			}
+		#container {width:600px;margin:0 auto}
+		#canvas {background:#e4e4e4}
+		footer {margin:16px 0 0 12px}
+		img {float:right}
+	</style>
+</head>
+<body>
+
+	<div id="container">
+		<header>
+			<h2>2D Affine Transformation Matrix</h2>
+		</header>
+
+		<div id="main">
+			<p>Synchronizing a canvas context by applying various transformations,
+			then apply those to four points for a rectangle.</p>
+			<p>The manually transformed rectangle is drawn on top in blue transparent of the canvas transformed
+			rectangle in red to show they are in perfect sync.</p>
+			<canvas id="canvas" width="600" height="400" style="border:1px solid #000">
+				<h1>Sorry, need a modern browser...</h1>
+			</canvas>
+		</div>
+
+		<footer>
+			<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAAAWCAMAAAA2NMTdAAAAhFBMVEUAAAA4SZ44SZ44SZ6AZEw3S584SZ44SZ44SZ44SZ44SZ44SZ4jerSWRV43fo/ULyqxszv1fzFovUX+vzI4SZ6weEY4SZ44SZ44SZ43fo+WRV71fzGxszs4SZ7BkjY3fo9ovUX+vzI4SZ4jerTULypovUX+vzI3fo+WRV6xszv1fzGAZEzOcUV7AAAAInRSTlMAEJ/PQDDvQIC/YCB/QEB/QECAgI8QcK/fgICAgFAwEHBw8/jPYwAAAcJJREFUSMftk9tS4zAMhuW4diyHhQVy2kPKrva8vP/7Ef21YwJTOr0hXPBNZyxZPnwdK/QbfL/+D66vfgJ6VZLE7XYSE7fbS7Tebi8RRt5egtwb6AnlFuy7L6DbXwGUTJ0xJWxmdaf+AcQGyzKP180ZLeiEW4ql1swJ0UfQdTtA3Qdw2CiZGmGKiZmoErHM7EViLYUSBxJhygSdYMlQFAsL5/00D//A19092H3+C5KEWq5DJy0xYwBm5HRLWhcoI35JHGIuUmrRwMHR+RIkrIeVvG2PSgQWR8D6mCWKhXdwOCnR1wceS1R6WCO8tMhaosrdMUs03h5EpVc7tqnmkgUcTkpk9PCgtKP0+EdBEj6uJTL1LEG9tJgcCBICUq9oOuh4xnNYBkNPkKDU65P1x5+DaJCazOiNFrCvUEk1/86SKCEkHLvyDi9IGD+aQSZ6JmGsCsDi6Cd6QkLbJSXDixI0CW7LEmuHxeIG7O8+gTt3AcobgPhUgqwwsDKsJca8RSVwzWiyhOdEdsgWv8DN5R9wefEDkNKETN2EhhZiJDIxlSKBOjzdQgHeJjgU5iyGzBR6SvTBHZV4Td4l3qTEt00lHgBjlGG7Su2augAAAABJRU5ErkJggg==">
+		</footer>
+	</div> 	<!-- container -->
+
+<script src="../matrix.min.js"></script>
+<script>
+
+	var canvas = document.getElementById('canvas'),
+		ctx = canvas.getContext('2d'),
+		rect = [{x: 100, y: 100}, {x: 900, y: 100}, {x: 900, y: 400}, {x: 100, y: 400}],
+		matrix = new Matrix(ctx),
+		y = 20;
+
+	// apply various transformations (context is synced by class)
+	matrix
+		.scale(1.2, 1.2)
+		.rotate(0.7)
+		.translate(20, 20)
+		.scale(0.5, 0.5)
+		.shear(0.5, 0)
+		.translate(100, -220)
+		.rotate(-0.3);
+
+	// apply transform to our point array
+	rect = matrix.applyToArray(rect);
+
+	// draw canvas transformed rectangle
+	ctx.strokeStyle = '#f00';
+	ctx.lineWidth = 2;
+	ctx.strokeRect(100, 100, 800, 300);
+
+	// draw custom transformed rectangle
+	ctx.setTransform(1, 0, 0, 1, 0, 0); // reset for demo so transforms doesn't add up
+	ctx.strokeStyle = 'rgba(0,0,255,0.5)';
+	ctx.moveTo(rect[0].x, rect[0].y);
+	ctx.lineTo(rect[1].x, rect[1].y);
+	ctx.lineTo(rect[2].x, rect[2].y);
+	ctx.lineTo(rect[3].x, rect[3].y);
+	ctx.closePath();
+	ctx.stroke();
+
+	// print transformation details
+	ctx.translate(0, 250);
+	ctx.font = '14px sans-serif';
+	ctx.fillText('matrix.scale(1.2, 1.2);', 20, nxy());
+	ctx.fillText('matrix.rotate(0.7);', 20, nxy());
+	ctx.fillText('matrix.translate(20, 20);', 20, nxy());
+	ctx.fillText('matrix.scale(0.5, 0.5);', 20, nxy());
+	ctx.fillText('matrix.shear(0.5, 0);', 20, nxy());
+	ctx.fillText('matrix.translate(100, -220);', 20, nxy());
+	ctx.fillText('matrix.rotate(-0.3);', 20, nxy());
+
+	function nxy() {y+=16;return y}
+
+</script>
+</body>
+</html>

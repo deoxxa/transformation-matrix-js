@@ -1,0 +1,116 @@
+Change log for 2D Transformation Matrix
+---------------------------------------
+
+2.0
+
+ADD: interpolateAnim() suitable for animation and is using decomposition
+for interpolation rather than naive interpolation (which can make rotations
+"flip" etc.).
+
+
+1.9.3
+
+ADD: toString(), toCSS(), toJSON(), toArray()
+
+
+1.9.2
+
+FIX: Speed improvements, trimmed code to reduce minify size.
+
+
+1.9.1
+
+FIX: Change in isValid() left boolean inverted.
+
+
+1.9
+
+ADD: scaleU()
+ADD: optional context parameter for interpolate()
+ADD: optional parameter for applyToTypedArray to use 64-bit float array
+CHG: some optimizations, reduced size
+FIX: divideScalar() did not update context if set
+FIX: internal use of isInvertible in inverse() was handled as property
+REM: getInverse() (use inverse() instead)
+
+
+1.8
+
+CHG: getInverse() -> inverse(). getInverse() will be removed in the future.
+ADD: rotateFromVector(x, y)
+ADD: decompose(lu|qr) (BETA) (L)
+ADD: determinant()
+ADD: divide(matrix)
+ADD: divideScalar(n)
+ADD: isInvertible()
+ADD: Error check for inverse(), throws error if non-invertible
+
+Thanks to github.com/leeoniya (L) for decompose() implementation
+(with some additional changes)
+
+
+1.7
+
+ADD: reflectVector() (BETA: possible special cases, simple impl. for now)
+ADD: concat() current instance onto supplied child matrix and return new
+ADD: isValid() to check the state of the matrix
+ADD: clone() current instance
+IMP: getInverse() now checks if identity first and skips calculations if it is
+
+
+1.6
+
+CHG: IMPORTANT! All skew() methods renamed to shear() (L)
+ADD: New skew() takes an angle in radians. (L)
+
+Thanks to github.com/leeoniya (L) for these contributions
+
+
+1.5
+
+ADD: new method applyToTypedArray()
+CHG: Code restructured to "minify" better (L)
+FIX: applyToArray() (L)
+
+Thanks to github.com/leeoniya (L) for these contributions
+
+
+1.4
+
+ADD: Made non-returning methods chain-able.
+
+
+1.3
+
+ADD: New method applyToContext().
+
+
+1.2
+
+ADD: Two new helper methods flipX() and flipY()
+ADD: Two new helper methods skewX() and skewY()
+ADD: Two new helper methods scaleX() and scaleY()
+ADD: Two new helper methods translateX() and translateY()
+ADD: Helper method rotateDeg() to rotate by degrees
+ADD: New method isEqual() to compare current matrix with another matrix
+CHG: getInverse() and interpolate() no longer apply parent's context to returned matrix
+CHG: Epsilon tolerance for floating point equal checks
+REM: Previous (partly experimental) added methods for add/subtract removed due to non-linear nature.
+
+
+1.1
+
+ADD: New method reset()
+ADD: New method add() (obsoleted)
+ADD: New method addMatrix() (obsoleted)
+ADD: New method subtract() (obsoleted)
+ADD: New method subtractMatrix() (obsoleted)
+CHG: NOTE: Method applyToPoint() takes pair of x/y instead of point object
+CHG: Method applyToArray() can now take two forms of arrays (point objects and point pair values)
+FIX: If context is provided it will now be initialized to identity matrix to enable 100% sync
+FIX: Some documentation errors
+
+
+1.0
+
+Initial release

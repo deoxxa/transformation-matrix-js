@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="author" content="(C) Epistemex 2014-2015">
+	<title>Reflect Vector demo</title>
+	<style>
+		html, body {width:100%;margin:0}
+		body {background:#101240;font:16px sans-serif;color:gold}
+		h1 {width:100%;border-bottom:1px solid #777;padding-bottom:10px}
+		#container {width:802px;margin:30px auto}
+		#canvas {border:4px solid #eee;margin:20px 0 0 200px}
+	</style>
+</head>
+<body>
+
+	<div id="container">
+		<h1>Transformation Matrix reflectVector() demo</h1>
+		<canvas id="canvas" width="400" height="400"></canvas>
+	</div>
+
+<script src="../matrix.min.js"></script>
+<script>
+
+	function Ball(x, y, r, vx, vy) {
+		this.x = x;
+		this.y = y;
+		this.vx = vx || 1;
+		this.vy = vx || 1;
+		this.radius = r || 4;
+		this.isHit = false;
+
+		this.update = function(ctx, w, h) {
+
+			this.x += this.vx;
+			this.y += this.vy;
+
+			// collision? NOTE: the detections in here are not
+			// accurate but will do for demoing the reflection.
+			// Some is compensated for using sub-framing in the loop.
+
+			if (this.x <= 0 || this.x >= w) {
+				this.vx = -this.vx;
+				this.x += this.vx;
+			}
+			if (this.y <= 0 || this.y >= h) {
+				this.vy = -this.vy;
+				this.y += this.vy;
+			}
+
+			if (ctx.isPointInPath(this.x, this.y)) {
+				if (!this.isHit) {
+					this.isHit = true;
+					return true;
+				}
+			}
+			else {
+				this.isHit = false;
+			}
+
+			ctx.moveTo(this.x + this.radius, this.y);
+			ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+			ctx.closePath();
+
+			return false;
+		}
+	}
+
+	var ball = new Ball(100, 100, 4),
+	    ball2 = new Ball(200, 360, 4),
+	    matrixRect = new Matrix(),
+	    matrixNormal = new Matrix(),
+	    rx = 200,
+	    ry = 7,
+	    rect = [-rx, -ry, rx, -ry, rx, ry, -rx, ry],
+		rdlt = 0.007,
+		ctx = document.getElementById("canvas").getContext("2d");
+
+	matrixRect.translate(200, 200);
+
+	function addRect(ctx) {
+		var pts = matrixRect.applyToArray(rect);
+		ctx.moveTo(pts[0], pts[1]);
+		ctx.lineTo(pts[2], pts[3]);
+		ctx.lineTo(pts[4], pts[5]);
+		ctx.lineTo(pts[6], pts[7]);
+		ctx.closePath();
+	}
+
+	ctx.fillStyle = "#fff";
+
+	(function render() {
+
+		ctx.clearRect(0, 0, 400, 400);
+
+		// use sub-frames
+		for(var i = 0; i < 4; i++) {
+			matrixRect.rotate(rdlt);
+			matrixNormal.rotate(rdlt);
+
+			ctx.beginPath();
+
+			// pad also function as collision object
+			addRect(ctx);
+
+			// update and test collision
+			if (ball.update(ctx, 400, 400)) {
+
+				//reflect velocity vector
+				var v = matrixNormal.reflectVector(ball.vx, ball.vy);
+
+				ball.vx = v.x;
+				ball.vy = v.y;
+				ball.x += ball.vx;
+				ball.y += ball.vy;
+			}
+
+			// update and test collision
+			if (ball2.update(ctx, 400, 400)) {
+
+				//reflect velocity vector
+				var v2 = matrixNormal.reflectVector(ball2.vx, ball2.vy);
+
+				ball2.vx = v2.x;
+				ball2.vy = v2.y;
+				ball2.x += ball2.vx;
+				ball2.y += ball2.vy;
+			}
+		}
+
+		ctx.fill();
+
+		requestAnimationFrame(render);
+	})();
+
+</script>
+</body>
+</html>
